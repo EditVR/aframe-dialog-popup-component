@@ -13,11 +13,15 @@ AFRAME.registerComponent('dialog-popup', {
   schema: {
     title: {
       type: 'string',
-      defailt: 'New Dialog'
+      default: 'New Dialog'
+    },
+    titleColor: {
+      type: 'string',
+      default: 'black'
     },
     body: {
       type: 'string',
-      defailt: 'This dialog has no body yet.'
+      default: 'This dialog has no body yet.'
     },
     image: {
       type: 'string',
@@ -26,6 +30,10 @@ AFRAME.registerComponent('dialog-popup', {
     openOn: {
       type: 'string',
       default: 'click'
+    },
+    defaultOpen: {
+      type: 'bool',
+      default: true
     },
     openIconImage: {
       type: 'asset',
@@ -62,10 +70,13 @@ AFRAME.registerComponent('dialog-popup', {
     dialogBoxColor: {
       type: 'string',
       default: 'white'
+    },
+    dialogBoxPaddingInDegrees: {
+      type: 'number',
+      default: 0.2
     }
   },
   multiple: true,
-  isOpen: false,
   dialogPlane: null,
   /**
    * Spawns the entities required to support this dialog.
@@ -131,6 +142,22 @@ AFRAME.registerComponent('dialog-popup', {
     return closeIcon;
   },
   /**
+   * Generates the title text.
+   */
+  generateTitle() {
+    const title = document.createElement('a-text');
+    title.setAttribute('id', `${this.el.getAttribute('id')}--title`);
+    title.setAttribute('value', this.data.title);
+    title.setAttribute('color', this.data.titleColor);
+    title.setAttribute('position', {
+      x: -(this.data.dialogBoxWidth / 2) + this.data.dialogBoxPaddingInDegrees,
+      y: this.data.dialogBoxHeight / 2 - this.data.dialogBoxPaddingInDegrees,
+      z: 0.01
+    });
+
+    return title;
+  },
+  /**
    * Generates the dialog plane.
    */
   generateDialogPlane() {
@@ -140,7 +167,7 @@ AFRAME.registerComponent('dialog-popup', {
     const position = Object.assign({}, this.el.getAttribute('position'));
     position.z += 1;
 
-    plane.setAttribute('visible', false);
+    plane.setAttribute('visible', this.data.defaultOpen);
     plane.setAttribute('position', position);
     plane.setAttribute('geometry', {
       primitive: 'plane',
@@ -153,6 +180,7 @@ AFRAME.registerComponent('dialog-popup', {
     });
 
     plane.appendChild(this.generateCloseIcon());
+    plane.appendChild(this.generateTitle());
     this.dialogPlane = plane;
     return plane;
   },
@@ -162,7 +190,5 @@ AFRAME.registerComponent('dialog-popup', {
     wrapper.appendChild(this.generateOpenIcon());
     wrapper.appendChild(this.generateDialogPlane());
     this.el.sceneEl.appendChild(wrapper);
-  },
-  update() {},
-  remove() {}
+  }
 });
