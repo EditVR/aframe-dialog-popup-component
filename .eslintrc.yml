@@ -1,0 +1,14 @@
+extends:
+  - airbnb-base
+  - prettier
+env:
+  es6: false
+  browser: true
+globals:
+  expect: true
+  it: true
+  describe: true
+  Promise: true
+rules:
+  strict: 0
+  no-plusplus: 0

@@ -1,24 +1,26 @@
 /* global assert, setup, suite, test */
 require('aframe');
 require('../index.js');
-var entityFactory = require('./helpers').entityFactory;
+const { entityFactory } = require('./helpers');
 
-suite('dialog-popup component', function () {
-  var component;
-  var el;
+suite('dialog-popup component', () => {
+  let component;
+  let el;
 
-  setup(function (done) {
+  setup(done => {
     el = entityFactory();
-    el.addEventListener('componentinitialized', function (evt) {
-      if (evt.detail.name !== 'dialog-popup') { return; }
+    el.addEventListener('componentinitialized', evt => {
+      if (evt.detail.name !== 'dialog-popup') {
+        return;
+      }
       component = el.components['dialog-popup'];
       done();
     });
     el.setAttribute('dialog-popup', {});
   });
 
-  suite('foo property', function () {
-    test('is good', function () {
+  suite('foo property', () => {
+    test('is good', () => {
       assert.equal(1, 1);
     });
   });

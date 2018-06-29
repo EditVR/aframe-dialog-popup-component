@@ -1,5 +1,5 @@
 // Karma configuration.
-module.exports = function (config) {
+module.exports = function(config) {
   config.set({
     basePath: '../',
     browserify: {
@@ -9,17 +9,22 @@ module.exports = function (config) {
     browsers: ['Firefox', 'Chrome'],
     client: {
       captureConsole: true,
-      mocha: {ui: 'tdd'}
+      mocha: { ui: 'tdd' }
     },
     envPreprocessor: ['TEST_ENV'],
     files: [
       // Define test files.
-      {pattern: 'tests/**/*.test.js'},
+      { pattern: 'tests/**/*.test.js' },
       // Serve test assets.
-      {pattern: 'tests/assets/**/*', included: false, served: true}
+      { pattern: 'tests/assets/**/*', included: false, served: true }
     ],
-    frameworks: ['mocha', 'sinon-chai', 'chai-shallow-deep-equal', 'browserify'],
-    preprocessors: {'tests/**/*.js': ['browserify', 'env']},
+    frameworks: [
+      'mocha',
+      'sinon-chai',
+      'chai-shallow-deep-equal',
+      'browserify'
+    ],
+    preprocessors: { 'tests/**/*.js': ['browserify', 'env'] },
     reporters: ['mocha']
   });
 };
