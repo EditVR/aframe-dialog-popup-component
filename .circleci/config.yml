@@ -26,7 +26,6 @@ jobs:
           key: v1-dependencies-{{ checksum "yarn.lock" }}
 
       - run: yarn lint
-      - run: yarn test
       - type: deploy
         name: Deploy and release.
         command: |
