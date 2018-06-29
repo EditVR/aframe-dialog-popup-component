@@ -19,9 +19,21 @@ AFRAME.registerComponent('dialog-popup', {
       type: 'string',
       default: 'black'
     },
+    titleFont: {
+      type: 'string',
+      default: 'mozillavr'
+    },
     body: {
       type: 'string',
       default: 'This dialog has no body yet.'
+    },
+    bodyColor: {
+      type: 'string',
+      default: 'black'
+    },
+    bodyFont: {
+      type: 'string',
+      default: 'mozillavr'
     },
     image: {
       type: 'string',
@@ -78,6 +90,7 @@ AFRAME.registerComponent('dialog-popup', {
   },
   multiple: true,
   dialogPlane: null,
+  title: null,
   /**
    * Spawns the entities required to support this dialog.
    */
@@ -97,70 +110,124 @@ AFRAME.registerComponent('dialog-popup', {
    * Generates the open icon.
    */
   generateOpenIcon() {
+    const {
+      openIconRadius: radius,
+      openIconColor: color,
+      openIconImage: src,
+      openOn
+    } = this.data;
+
     const openIcon = document.createElement('a-entity');
     openIcon.setAttribute('id', `${this.el.getAttribute('id')}--open-icon`);
     openIcon.setAttribute('position', this.el.getAttribute('position'));
     openIcon.setAttribute('geometry', {
       primitive: 'circle',
-      radius: this.data.openIconRadius
+      radius
     });
     openIcon.setAttribute('material', {
-      color: this.data.openIconColor,
-      src: this.data.openIconImage
+      color,
+      src
     });
 
-    openIcon.addEventListener(
-      this.data.openOn,
-      this.toggleDialogOpen.bind(this)
-    );
+    openIcon.addEventListener(openOn, this.toggleDialogOpen.bind(this));
     return openIcon;
   },
   /**
    * Generates the close icon.
    */
   generateCloseIcon() {
+    const {
+      closeIconRadius: radius,
+      closeIconColor: color,
+      closeIconImage: src,
+      dialogBoxWidth: width,
+      dialogBoxHeight: height,
+      openOn
+    } = this.data;
+
     const closeIcon = document.createElement('a-entity');
     closeIcon.setAttribute('id', `${this.el.getAttribute('id')}--close-icon`);
     closeIcon.setAttribute('position', {
-      x: this.data.dialogBoxWidth / 2,
-      y: this.data.dialogBoxHeight / 2,
+      x: width / 2,
+      y: height / 2,
       z: 0.01
     });
     closeIcon.setAttribute('geometry', {
       primitive: 'circle',
-      radius: this.data.closeIconRadius
+      radius
     });
     closeIcon.setAttribute('material', {
-      color: this.data.closeIconColor,
-      src: this.data.closeIconImage
+      color,
+      src
     });
 
-    closeIcon.addEventListener(
-      this.data.openOn,
-      this.toggleDialogOpen.bind(this)
-    );
+    closeIcon.addEventListener(openOn, this.toggleDialogOpen.bind(this));
     return closeIcon;
   },
   /**
    * Generates the title text.
    */
   generateTitle() {
-    const title = document.createElement('a-text');
+    const {
+      title: value,
+      titleColor: color,
+      titleFont: font,
+      dialogBoxWidth: width,
+      dialogBoxHeight: height,
+      dialogBoxPaddingInDegrees: padding
+    } = this.data;
+
+    const title = document.createElement('a-entity');
     title.setAttribute('id', `${this.el.getAttribute('id')}--title`);
-    title.setAttribute('value', this.data.title);
-    title.setAttribute('color', this.data.titleColor);
+    title.setAttribute('text', {
+      value,
+      color,
+      font,
+      width,
+      baseline: 'top',
+      wrapCount: 28
+    });
     title.setAttribute('position', {
-      x: -(this.data.dialogBoxWidth / 2) + this.data.dialogBoxPaddingInDegrees,
-      y: this.data.dialogBoxHeight / 2 - this.data.dialogBoxPaddingInDegrees,
+      x: padding,
+      y: height / 2 - padding,
       z: 0.01
     });
 
+    this.title = title;
     return title;
+  },
+  generateBody() {
+    const {
+      body: value,
+      bodyColor: color,
+      bodyFont: font,
+      dialogBoxWidth: width,
+      dialogBoxHeight: height,
+      dialogBoxPaddingInDegrees: padding
+    } = this.data;
+
+    const body = document.createElement('a-entity');
+    body.setAttribute('id', `${this.el.getAttribute('id')}--title`);
+    body.setAttribute('text', { value, color, width, font });
+
+    body.setAttribute('position', {
+      x: padding,
+      y: height / 2 - padding * 2.5,
+      z: 0.01
+    });
+
+    return body;
   },
   /**
    * Generates the dialog plane.
    */
   generateDialogPlane() {
+    const {
+      dialogBoxWidth: width,
+      dialogBoxHeight: height,
+      dialogBoxColor: color
+    } = this.data;
+
     const plane = document.createElement('a-entity');
 
     // The dialog should always be a little closer to the camera than the icon.
@@ -171,16 +238,14 @@ AFRAME.registerComponent('dialog-popup', {
     plane.setAttribute('position', position);
     plane.setAttribute('geometry', {
       primitive: 'plane',
-      width: this.data.dialogBoxWidth,
-      height: this.data.dialogBoxHeight
+      width,
+      height
     });
 
-    plane.setAttribute('material', {
-      color: this.data.dialogBoxColor
-    });
-
+    plane.setAttribute('material', { color });
     plane.appendChild(this.generateCloseIcon());
     plane.appendChild(this.generateTitle());
+    plane.appendChild(this.generateBody());
     this.dialogPlane = plane;
     return plane;
   },
