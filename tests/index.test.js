@@ -4,7 +4,6 @@ require('../index.js');
 const { entityFactory } = require('./helpers');
 
 suite('dialog-popup component', () => {
-  let component;
   let el;
 
   setup(done => {
@@ -13,7 +12,6 @@ suite('dialog-popup component', () => {
       if (evt.detail.name !== 'dialog-popup') {
         return;
       }
-      component = el.components['dialog-popup'];
       done();
     });
     el.setAttribute('dialog-popup', {});

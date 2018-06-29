@@ -98,7 +98,7 @@ AFRAME.registerComponent('dialog-popup', {
    * Called when component is attached and when component data changes.
    * Generally modifies the entity based on the data.
    */
-  update(oldData) {},
+  update() {},
 
   /**
    * Called when a component is removed (e.g., via removeAttribute).
