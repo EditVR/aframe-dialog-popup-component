@@ -10,11 +10,13 @@
     "dist": "npm run build && uglifyjs dist/aframe-dialog-popup-component.js > dist/aframe-dialog-popup-component.min.js",
     "lint": "eslint --ext .jsx,.js .",
     "prepublish": "npm run dist",
+    "deploy": "npm publish",
     "prettier": "prettier --write \"**/*.{js,jsx,json,css}\"",
     "precommit": "lint-staged -c lint-staged.config.js ; yarn lint ; yarn test",
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "ghpages": "ghpages",
     "start": "npm run dev",
+    "semantic-release": "semantic-release",
     "test": "karma start ./tests/karma.conf.js --single-run",
     "test:firefox": "karma start ./tests/karma.conf.js --browsers Firefox",
     "test:chrome": "karma start ./tests/karma.conf.js --browsers Chrome"
@@ -38,8 +40,26 @@
     "url": "https://github.com/editvr/aframe-dialog-popup-component/issues"
   },
   "homepage": "https://github.com/editvr/aframe-dialog-popup-component#readme",
+  "release": {
+    "verifyConditions": [
+      "@semantic-release/npm",
+      "@semantic-release/github"
+    ],
+    "publish": [
+      "@semantic-release/npm",
+      "@semantic-release/github"
+    ],
+    "success": [
+      "@semantic-release/github"
+    ],
+    "fail": [
+      "@semantic-release/github"
+    ]
+  },
   "devDependencies": {
     "@commitlint/cli": "^7.0.0",
+    "@semantic-release/github": "^4.2.18",
+    "@semantic-release/npm": "^3.3.4",
     "aframe": "*",
     "browserify": "^13.0.0",
     "budo": "^8.2.2",
@@ -64,6 +84,7 @@
     "mocha": "^2.3.4",
     "prettier": "^1.13.7",
     "randomcolor": "^0.4.4",
+    "semantic-release": "^15.6.0",
     "semistandard": "^8.0.0",
     "shelljs": "^0.7.0",
     "shx": "^0.1.1",

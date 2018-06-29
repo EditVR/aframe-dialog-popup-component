@@ -1,0 +1,39 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10-stretch
+    working_directory: ~/repo
+    branches:
+      ignore:
+        - gh-pages
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "yarn.lock" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run: yarn install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "yarn.lock" }}
+
+      - run: yarn lint
+      - run: yarn test:ci
+      - type: deploy
+        name: Deploy and release.
+        command: |
+          if [ "${CIRCLE_BRANCH}" == "master" ]; then
+            git config --global user.email "editvr@fourkitchens.com"
+            git config --global user.name "EditVR Bot"
+            git fetch --tags
+            yarn semantic-release
+            yarn deploy
+          fi
