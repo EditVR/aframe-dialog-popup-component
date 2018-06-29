@@ -1,5 +1,5 @@
 {
-  "name": "aframe-dialog-popup-component",
+  "name": "@editvr/aframe-dialog-popup-component",
   "version": "1.0.0",
   "description": "Provides a component that constructs a toggle-able dialog with a title, description, image, and close button.",
   "main": "index.js",
