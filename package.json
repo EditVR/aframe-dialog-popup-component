@@ -1,6 +1,6 @@
 {
   "name": "@editvr/aframe-dialog-popup-component",
-  "version": "1.0.0",
+  "version": "0.0.0-development",
   "description": "Provides a component that constructs a toggle-able dialog with a title, description, image, and close button.",
   "main": "index.js",
   "unpkg": "dist/aframe-dialog-popup-component.min.js",
@@ -9,7 +9,7 @@
     "dev": "budo index.js:dist/aframe-dialog-popup-component.min.js --port 7000 --live --open",
     "dist": "npm run build && uglifyjs dist/aframe-dialog-popup-component.js > dist/aframe-dialog-popup-component.min.js",
     "lint": "eslint --ext .jsx,.js .",
-    "prepublish": "npm run dist",
+    "prepublishOnly": "npm run dist",
     "deploy": "npm publish",
     "prettier": "prettier --write \"**/*.{js,jsx,json,css}\"",
     "precommit": "lint-staged -c lint-staged.config.js ; yarn lint ; yarn test",
