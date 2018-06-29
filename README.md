@@ -1,6 +1,7 @@
 ## aframe-dialog-popup-component
 
 [![Version](http://img.shields.io/npm/v/aframe-dialog-popup-component.svg?style=flat-square)](https://npmjs.org/package/aframe-dialog-popup-component)
+[![CircleCI](http://img.shields.io/npm/circleci/project/github/EditVR/aframe-dialog-popup-component.svg?style=flat-square)](https://npmjs.org/package/@editvr/aframe-dialog-popup-component)
 [![License](http://img.shields.io/npm/l/aframe-dialog-popup-component.svg?style=flat-square)](https://npmjs.org/package/aframe-dialog-popup-component)
 
 Provides a component that constructs a toggle-able dialog with a title, description, image, and 
