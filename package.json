@@ -10,7 +10,6 @@
     "dist": "npm run build && uglifyjs dist/aframe-dialog-popup-component.js > dist/aframe-dialog-popup-component.min.js",
     "lint": "eslint --ext .jsx,.js .",
     "prepublishOnly": "npm run dist",
-    "deploy": "npm publish",
     "prettier": "prettier --write \"**/*.{js,jsx,json,css}\"",
     "precommit": "lint-staged -c lint-staged.config.js ; yarn lint ; yarn test",
     "commitmsg": "commitlint -e $GIT_PARAMS",
