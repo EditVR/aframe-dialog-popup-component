@@ -10,44 +10,159 @@ if (typeof AFRAME === 'undefined') {
  * Dialog Popup component for A-Frame.
  */
 AFRAME.registerComponent('dialog-popup', {
-  schema: {},
-
+  schema: {
+    title: {
+      type: 'string',
+      defailt: 'New Dialog'
+    },
+    body: {
+      type: 'string',
+      defailt: 'This dialog has no body yet.'
+    },
+    image: {
+      type: 'string',
+      default: ''
+    },
+    openOn: {
+      type: 'string',
+      default: 'click'
+    },
+    openIconImage: {
+      type: 'asset',
+      default: './assets/info.jpg'
+    },
+    openIconRadius: {
+      type: 'number',
+      default: 0.3
+    },
+    openIconColor: {
+      type: 'string',
+      default: 'white'
+    },
+    closeIconImage: {
+      type: 'asset',
+      default: './assets/close.jpg'
+    },
+    closeIconRadius: {
+      type: 'number',
+      default: 0.3
+    },
+    closeIconColor: {
+      type: 'string',
+      default: 'white'
+    },
+    dialogBoxWidth: {
+      type: 'number',
+      default: 4
+    },
+    dialogBoxHeight: {
+      type: 'number',
+      default: 4
+    },
+    dialogBoxColor: {
+      type: 'string',
+      default: 'white'
+    }
+  },
+  multiple: true,
+  isOpen: false,
+  dialogPlane: null,
   /**
-   * Set if component needs multiple instancing.
+   * Spawns the entities required to support this dialog.
    */
-  multiple: false,
-
+  init() {
+    this.spawnEntities();
+  },
   /**
-   * Called once when component is attached. Generally for initial setup.
+   * Handles opening and closing the dialog plane.
    */
-  init() {},
-
+  toggleDialogOpen() {
+    this.isOpen = !this.isOpen;
+    if (this.dialogPlane) {
+      this.dialogPlane.setAttribute('visible', this.isOpen);
+    }
+  },
   /**
-   * Called when component is attached and when component data changes.
-   * Generally modifies the entity based on the data.
+   * Generates the open icon.
    */
+  generateOpenIcon() {
+    const openIcon = document.createElement('a-entity');
+    openIcon.setAttribute('id', `${this.el.getAttribute('id')}--open-icon`);
+    openIcon.setAttribute('position', this.el.getAttribute('position'));
+    openIcon.setAttribute('geometry', {
+      primitive: 'circle',
+      radius: this.data.openIconRadius
+    });
+    openIcon.setAttribute('material', {
+      color: this.data.openIconColor,
+      src: this.data.openIconImage
+    });
+
+    openIcon.addEventListener(
+      this.data.openOn,
+      this.toggleDialogOpen.bind(this)
+    );
+    return openIcon;
+  },
+  /**
+   * Generates the close icon.
+   */
+  generateCloseIcon() {
+    const closeIcon = document.createElement('a-entity');
+    closeIcon.setAttribute('id', `${this.el.getAttribute('id')}--close-icon`);
+    closeIcon.setAttribute('position', {
+      x: this.data.dialogBoxWidth / 2,
+      y: this.data.dialogBoxHeight / 2,
+      z: 0.01
+    });
+    closeIcon.setAttribute('geometry', {
+      primitive: 'circle',
+      radius: this.data.closeIconRadius
+    });
+    closeIcon.setAttribute('material', {
+      color: this.data.closeIconColor,
+      src: this.data.closeIconImage
+    });
+
+    closeIcon.addEventListener(
+      this.data.openOn,
+      this.toggleDialogOpen.bind(this)
+    );
+    return closeIcon;
+  },
+  /**
+   * Generates the dialog plane.
+   */
+  generateDialogPlane() {
+    const plane = document.createElement('a-entity');
+
+    // The dialog should always be a little closer to the camera than the icon.
+    const position = Object.assign({}, this.el.getAttribute('position'));
+    position.z += 1;
+
+    plane.setAttribute('visible', false);
+    plane.setAttribute('position', position);
+    plane.setAttribute('geometry', {
+      primitive: 'plane',
+      width: this.data.dialogBoxWidth,
+      height: this.data.dialogBoxHeight
+    });
+
+    plane.setAttribute('material', {
+      color: this.data.dialogBoxColor
+    });
+
+    plane.appendChild(this.generateCloseIcon());
+    this.dialogPlane = plane;
+    return plane;
+  },
+  spawnEntities() {
+    const wrapper = document.createElement('a-entity');
+    wrapper.setAttribute('id', `${this.el.getAttribute('id')}--wrapper`);
+    wrapper.appendChild(this.generateOpenIcon());
+    wrapper.appendChild(this.generateDialogPlane());
+    this.el.sceneEl.appendChild(wrapper);
+  },
   update() {},
-
-  /**
-   * Called when a component is removed (e.g., via removeAttribute).
-   * Generally undoes all modifications to the entity.
-   */
-  remove() {},
-
-  /**
-   * Called on each scene tick.
-   */
-  // tick: function (t) { },
-
-  /**
-   * Called when entity pauses.
-   * Use to stop or remove any dynamic or background behavior such as events.
-   */
-  pause() {},
-
-  /**
-   * Called when entity resumes.
-   * Use to continue or add any dynamic or background behavior such as events.
-   */
-  play() {}
+  remove() {}
 });

@@ -6,7 +6,7 @@
  *
  * @returns {object} An `<a-entity>` element.
  */
-module.exports.entityFactory = function entityFactory (options) {
+module.exports.entityFactory = function entityFactory(options) {
   const scene = document.createElement('a-scene');
   const assets = document.createElement('a-assets');
   const entity = document.createElement('a-entity');
