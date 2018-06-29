@@ -32,7 +32,8 @@
     "dialog-popup"
   ],
   "author": "Patrick Coffey <patrickcoffey48@gmail.com>",
-  "license": "MIT",
+  "private": false,
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/editvr/aframe-dialog-popup-component/issues"
   },
