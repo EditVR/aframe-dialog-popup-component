@@ -52,10 +52,6 @@ AFRAME.registerComponent('dialog-popup', {
       type: 'string',
       default: 'click'
     },
-    defaultOpen: {
-      type: 'bool',
-      default: false
-    },
     openIconImage: {
       type: 'asset',
       default: ''
@@ -117,6 +113,15 @@ AFRAME.registerComponent('dialog-popup', {
    */
   init() {
     this.spawnEntities();
+    this.cameraEl = document.querySelector('[camera]');
+  },
+  /**
+   * If the component is open, ensure it always faces the camera.
+   */
+  tick() {
+    if (this.isOpen) {
+      this.positionDialogPlane();
+    }
   },
   /**
    * Handles opening and closing the dialog plane.
@@ -124,6 +129,7 @@ AFRAME.registerComponent('dialog-popup', {
   toggleDialogOpen() {
     this.isOpen = !this.isOpen;
     if (this.dialogPlane) {
+      this.positionDialogPlane();
       this.dialogPlane.setAttribute('visible', this.isOpen);
     }
   },
@@ -306,13 +312,9 @@ AFRAME.registerComponent('dialog-popup', {
     } = this.data;
 
     const plane = document.createElement('a-entity');
+    plane.setAttribute('id', `${this.el.getAttribute('id')}--dialog-plane`);
 
-    // The dialog should always be a little closer to the camera than the icon.
-    const position = Object.assign({}, this.el.getAttribute('position'));
-    position.z += 1;
-
-    plane.setAttribute('visible', this.data.defaultOpen);
-    plane.setAttribute('position', position);
+    plane.setAttribute('visible', false);
     plane.setAttribute('geometry', {
       primitive: 'plane',
       width: width + padding,
@@ -330,7 +332,16 @@ AFRAME.registerComponent('dialog-popup', {
     plane.appendChild(this.generateBody());
 
     this.dialogPlane = plane;
+
     return plane;
+  },
+  positionDialogPlane() {
+    if (this.dialogPlane) {
+      const vector = this.dialogPlane.object3D.parent.worldToLocal(
+        this.cameraEl.object3D.getWorldPosition()
+      );
+      this.dialogPlane.object3D.lookAt(vector);
+    }
   },
   spawnEntities() {
     const wrapper = document.createElement('a-entity');
