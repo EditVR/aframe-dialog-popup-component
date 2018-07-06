@@ -69,3 +69,10 @@ Then require and use.
 require('aframe');
 require('@editvr/aframe-dialog-popup-component');
 ```
+
+## Example
+### Closed
+![Closed](https://github.com/EditVR/aframe-dialog-popup-component/raw/develop/examples/assets/closed.png)
+### Opened
+![Open](https://github.com/EditVR/aframe-dialog-popup-component/raw/develop/examples/assets/open.png)
+
