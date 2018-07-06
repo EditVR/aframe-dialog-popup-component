@@ -172,13 +172,15 @@ AFRAME.registerComponent('dialog-popup', {
       type: 'string',
       default: 'white'
     },
-    dialogBoxPaddingInDegrees: {
+    dialogBoxPadding: {
       type: 'number',
       default: 0.2
     }
   },
   multiple: true,
   dialogPlane: null,
+  openIcon: null,
+  closeIcon: null,
   hasImage: false,
   /**
    * Spawns the entities required to support this dialog.
@@ -194,6 +196,17 @@ AFRAME.registerComponent('dialog-popup', {
     if (this.isOpen) {
       this.positionDialogPlane();
     }
+  },
+  /**
+   * When this component is removed, destruct event listeners.
+   */
+  remove() {
+    const { openOn } = this.data;
+    this.openIcon.removeEventListener(openOn, this.toggleDialogOpen.bind(this));
+    this.closeIcon.removeEventListener(
+      openOn,
+      this.toggleDialogOpen.bind(this)
+    );
   },
   /**
    * Handles opening and closing the dialog plane.
@@ -228,7 +241,16 @@ AFRAME.registerComponent('dialog-popup', {
       src
     });
 
+    // If the parent entity has aa look-at component attached, apply the look-at
+    // component to the openIcon.
+    const lookAt = this.el.getAttribute('look-at');
+    if (lookAt) {
+      openIcon.setAttribute('look-at', lookAt);
+    }
+
     openIcon.addEventListener(openOn, this.toggleDialogOpen.bind(this));
+
+    this.openIcon = openIcon;
     return openIcon;
   },
   /**
@@ -261,6 +283,8 @@ AFRAME.registerComponent('dialog-popup', {
     });
 
     closeIcon.addEventListener(openOn, this.toggleDialogOpen.bind(this));
+
+    this.closeIcon = closeIcon;
     return closeIcon;
   },
   /**
@@ -274,7 +298,7 @@ AFRAME.registerComponent('dialog-popup', {
       titleWrapCount: wrapCount,
       dialogBoxWidth: width,
       dialogBoxHeight: height,
-      dialogBoxPaddingInDegrees: padding,
+      dialogBoxPadding: padding,
       imageHeight
     } = this.data;
 
@@ -314,7 +338,7 @@ AFRAME.registerComponent('dialog-popup', {
       bodyWrapCount: wrapCount,
       dialogBoxWidth: width,
       dialogBoxHeight: height,
-      dialogBoxPaddingInDegrees: padding,
+      dialogBoxPadding: padding,
       imageHeight
     } = this.data;
 
@@ -379,7 +403,7 @@ AFRAME.registerComponent('dialog-popup', {
     const {
       dialogBoxWidth: width,
       dialogBoxHeight: height,
-      dialogBoxPaddingInDegrees: padding,
+      dialogBoxPadding: padding,
       dialogBoxColor: color
     } = this.data;
 
@@ -416,11 +440,8 @@ AFRAME.registerComponent('dialog-popup', {
     }
   },
   spawnEntities() {
-    const wrapper = document.createElement('a-entity');
-    wrapper.setAttribute('id', `${this.el.getAttribute('id')}--wrapper`);
-    wrapper.appendChild(this.generateOpenIcon());
-    wrapper.appendChild(this.generateDialogPlane());
-    this.el.appendChild(wrapper);
+    this.el.appendChild(this.generateOpenIcon());
+    this.el.appendChild(this.generateDialogPlane());
   }
 });
 
