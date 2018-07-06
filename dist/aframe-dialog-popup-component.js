@@ -70,6 +70,11 @@
 /* 0 */
 /***/ (function(module, exports) {
 
+/**
+ * @file index.js
+ * Contains code that registers a dialog popup component.
+ */
+
 /* global AFRAME */
 
 if (typeof AFRAME === 'undefined') {
@@ -115,17 +120,13 @@ AFRAME.registerComponent('dialog-popup', {
       type: 'number',
       default: 30
     },
-    image: {
-      type: 'string',
-      default: ''
-    },
     openOn: {
       type: 'string',
       default: 'click'
     },
     defaultOpen: {
       type: 'bool',
-      default: true
+      default: false
     },
     openIconImage: {
       type: 'asset',
@@ -151,6 +152,18 @@ AFRAME.registerComponent('dialog-popup', {
       type: 'string',
       default: 'white'
     },
+    image: {
+      type: 'string',
+      default: ''
+    },
+    imageWidth: {
+      type: 'number',
+      default: 2
+    },
+    imageHeight: {
+      type: 'number',
+      default: 2
+    },
     dialogBoxWidth: {
       type: 'number',
       default: 4
@@ -170,6 +183,7 @@ AFRAME.registerComponent('dialog-popup', {
   },
   multiple: true,
   dialogPlane: null,
+  hasImage: false,
   /**
    * Spawns the entities required to support this dialog.
    */
@@ -254,7 +268,8 @@ AFRAME.registerComponent('dialog-popup', {
       titleWrapCount: wrapCount,
       dialogBoxWidth: width,
       dialogBoxHeight: height,
-      dialogBoxPaddingInDegrees: padding
+      dialogBoxPaddingInDegrees: padding,
+      imageHeight
     } = this.data;
 
     const title = document.createElement('a-entity');
@@ -268,9 +283,14 @@ AFRAME.registerComponent('dialog-popup', {
       baseline: 'top'
     });
 
+    let y = height / 2 - padding;
+    if (this.hasImage) {
+      y -= imageHeight / 2;
+    }
+
     title.setAttribute('position', {
       x: padding,
-      y: height / 2 - padding,
+      y,
       z: 0.01
     });
 
@@ -287,7 +307,8 @@ AFRAME.registerComponent('dialog-popup', {
       bodyWrapCount: wrapCount,
       dialogBoxWidth: width,
       dialogBoxHeight: height,
-      dialogBoxPaddingInDegrees: padding
+      dialogBoxPaddingInDegrees: padding,
+      imageHeight
     } = this.data;
 
     const body = document.createElement('a-entity');
@@ -301,13 +322,47 @@ AFRAME.registerComponent('dialog-popup', {
       baseline: 'top'
     });
 
+    let y = height / 2 - padding * 3;
+    if (this.hasImage) {
+      y -= imageHeight / 2;
+    }
+
     body.setAttribute('position', {
       x: padding,
-      y: height / 2 - padding * 3,
+      y,
       z: 0.01
     });
 
     return body;
+  },
+  /**
+   * Generates the image entity.
+   */
+  generateImage() {
+    const {
+      image: src,
+      imageWidth: width,
+      imageHeight: height,
+      dialogBoxHeight
+    } = this.data;
+
+    if (!src.length) {
+      return null;
+    }
+
+    const image = document.createElement('a-image');
+    image.setAttribute('id', `${this.el.getAttribute('id')}--image`);
+    image.setAttribute('src', src);
+    image.setAttribute('width', width);
+    image.setAttribute('height', height);
+    image.setAttribute('position', {
+      x: 0,
+      y: dialogBoxHeight / 2,
+      z: 0.01
+    });
+
+    this.hasImage = true;
+    return image;
   },
   /**
    * Generates the dialog plane.
@@ -334,10 +389,16 @@ AFRAME.registerComponent('dialog-popup', {
       height: height + padding
     });
 
+    const image = this.generateImage();
+    if (image) {
+      plane.appendChild(this.generateImage());
+    }
+
     plane.setAttribute('material', { color });
     plane.appendChild(this.generateCloseIcon());
     plane.appendChild(this.generateTitle());
     plane.appendChild(this.generateBody());
+
     this.dialogPlane = plane;
     return plane;
   },
