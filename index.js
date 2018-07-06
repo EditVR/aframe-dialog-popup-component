@@ -206,9 +206,10 @@ AFRAME.registerComponent('dialog-popup', {
       value: value.substring(0, wrapCount),
       color,
       font,
-      width,
       wrapCount,
-      baseline: 'top'
+      width: width - padding * 2,
+      baseline: 'top',
+      anchor: 'left'
     });
 
     let y = height / 2 - padding;
@@ -217,7 +218,7 @@ AFRAME.registerComponent('dialog-popup', {
     }
 
     title.setAttribute('position', {
-      x: padding,
+      x: -(width / 2) + padding,
       y,
       z: 0.01
     });
@@ -244,10 +245,11 @@ AFRAME.registerComponent('dialog-popup', {
     body.setAttribute('text', {
       value,
       color,
-      width,
       font,
       wrapCount,
-      baseline: 'top'
+      width: width - padding * 2,
+      baseline: 'top',
+      anchor: 'left'
     });
 
     let y = height / 2 - padding * 3;
@@ -256,7 +258,7 @@ AFRAME.registerComponent('dialog-popup', {
     }
 
     body.setAttribute('position', {
-      x: padding,
+      x: -(width / 2) + padding,
       y,
       z: 0.01
     });
