@@ -95,6 +95,10 @@ AFRAME.registerComponent('dialog-popup', {
       type: 'string',
       default: 'mozillavr'
     },
+    titleWrapCount: {
+      type: 'number',
+      default: 28
+    },
     body: {
       type: 'string',
       default: 'This dialog has no body yet.'
@@ -106,6 +110,10 @@ AFRAME.registerComponent('dialog-popup', {
     bodyFont: {
       type: 'string',
       default: 'mozillavr'
+    },
+    bodyWrapCount: {
+      type: 'number',
+      default: 28
     },
     image: {
       type: 'string',
@@ -121,7 +129,7 @@ AFRAME.registerComponent('dialog-popup', {
     },
     openIconImage: {
       type: 'asset',
-      default: './assets/info.jpg'
+      default: '../../assets/info.jpg'
     },
     openIconRadius: {
       type: 'number',
@@ -133,7 +141,7 @@ AFRAME.registerComponent('dialog-popup', {
     },
     closeIconImage: {
       type: 'asset',
-      default: './assets/close.jpg'
+      default: '../../assets/close.jpg'
     },
     closeIconRadius: {
       type: 'number',
@@ -233,10 +241,7 @@ AFRAME.registerComponent('dialog-popup', {
       src
     });
 
-    closeIcon.addEventListener(
-      this.data.openOn,
-      this.toggleDialogOpen.bind(this)
-    );
+    closeIcon.addEventListener(openOn, this.toggleDialogOpen.bind(this));
     return closeIcon;
   },
   /**
@@ -247,6 +252,7 @@ AFRAME.registerComponent('dialog-popup', {
       title: value,
       titleColor: color,
       titleFont: font,
+      titleWrapCount: wrapCount,
       dialogBoxWidth: width,
       dialogBoxHeight: height,
       dialogBoxPaddingInDegrees: padding
@@ -259,8 +265,8 @@ AFRAME.registerComponent('dialog-popup', {
       color,
       font,
       width,
+      wrapCount,
       baseline: 'top',
-      wrapCount: 28
     });
     title.setAttribute('position', {
       x: padding,
@@ -271,11 +277,15 @@ AFRAME.registerComponent('dialog-popup', {
     this.title = title;
     return title;
   },
+  /**
+   * Generates the body text entity.
+   */
   generateBody() {
     const {
       body: value,
       bodyColor: color,
       bodyFont: font,
+      bodyWrapCount: wrapCount,
       dialogBoxWidth: width,
       dialogBoxHeight: height,
       dialogBoxPaddingInDegrees: padding
@@ -283,7 +293,14 @@ AFRAME.registerComponent('dialog-popup', {
 
     const body = document.createElement('a-entity');
     body.setAttribute('id', `${this.el.getAttribute('id')}--title`);
-    body.setAttribute('text', { value, color, width });
+    body.setAttribute('text', {
+      value,
+      color,
+      width,
+      font,
+      wrapCount,
+      baseline: 'top'
+    });
 
     body.setAttribute('position', {
       x: padding,
@@ -300,6 +317,7 @@ AFRAME.registerComponent('dialog-popup', {
     const {
       dialogBoxWidth: width,
       dialogBoxHeight: height,
+      dialogBoxPaddingInDegrees: padding,
       dialogBoxColor: color
     } = this.data;
 
@@ -313,8 +331,8 @@ AFRAME.registerComponent('dialog-popup', {
     plane.setAttribute('position', position);
     plane.setAttribute('geometry', {
       primitive: 'plane',
-      width,
-      height
+      width: width + padding,
+      height: height + padding
     });
 
     plane.setAttribute('material', { color });

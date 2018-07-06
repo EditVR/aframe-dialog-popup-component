@@ -10,9 +10,10 @@ For [A-Frame](https://aframe.io).
 
 ### API
 
-| Property | Description | Default Value |
-| -------- | ----------- | ------------- |
-|          |             |               |
+| Property               | Description                 | Default Value                 |
+| ---------------------- | --------------------------- | ----------------------------- |
+| titleColor             | Text color of title.        | white                         |
+| titleFont              | Title font.                 | mozillavr                     |
 
 ### Installation
 
