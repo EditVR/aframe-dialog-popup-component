@@ -337,6 +337,6 @@ AFRAME.registerComponent('dialog-popup', {
     wrapper.setAttribute('id', `${this.el.getAttribute('id')}--wrapper`);
     wrapper.appendChild(this.generateOpenIcon());
     wrapper.appendChild(this.generateDialogPlane());
-    this.el.sceneEl.appendChild(wrapper);
+    this.el.appendChild(wrapper);
   }
 });

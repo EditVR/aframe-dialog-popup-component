@@ -9,22 +9,17 @@
   </head>
   <body>
     <a-scene inspector="url: https://aframe.io/releases/0.3.0/aframe-inspector.min.js">
-      <a-camera
-        id="camera"
-        wasd-controls-enabled="false"
-        cursor="rayOrigin: mouse"
-      />
-      <a-sky color="#24CAFF" />
+      <a-camera id="camera" wasd-controls-enabled="false" cursor="rayOrigin: mouse"></a-camera>
+      <a-sky color="#24CAFF"></a-sky>
       <a-entity
         id="dialog"
-        position="0 0 -4"
+        position="0 0 -2"
         dialog-popup="
           openIconImage: ../assets/info.jpg;
           closeIconImage: ../assets/close.jpg;
-          image: ../assets/tony.jpg;
-          title: This is an example title.
-          body: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean dolor sem, consectetur sed nibh a, placerat semper augue. Aenean consectetur nec nunc vestibulum aliquet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean dolor sem, consectetur sed nibh a, placerat semper augue.
-          "/>
+          title: Kellogg's frosted flakes;
+          body: Frosted Flakes or Frosties is a breakfast cereal, produced by the Kellogg Company and consisting of sugar-coated corn flakes. It was introduced in the United States in 1952, as Sugar Frosted Flakes.;
+          "></a-entity>
     </a-scene>
 
     <!-- GitHub Corner. -->
