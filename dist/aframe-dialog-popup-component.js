@@ -97,7 +97,7 @@ AFRAME.registerComponent('dialog-popup', {
     },
     titleWrapCount: {
       type: 'number',
-      default: 28
+      default: 24
     },
     body: {
       type: 'string',
@@ -113,7 +113,7 @@ AFRAME.registerComponent('dialog-popup', {
     },
     bodyWrapCount: {
       type: 'number',
-      default: 28
+      default: 30
     },
     image: {
       type: 'string',
@@ -129,7 +129,7 @@ AFRAME.registerComponent('dialog-popup', {
     },
     openIconImage: {
       type: 'asset',
-      default: '../../assets/info.jpg'
+      default: ''
     },
     openIconRadius: {
       type: 'number',
@@ -141,7 +141,7 @@ AFRAME.registerComponent('dialog-popup', {
     },
     closeIconImage: {
       type: 'asset',
-      default: '../../assets/close.jpg'
+      default: ''
     },
     closeIconRadius: {
       type: 'number',
@@ -170,7 +170,6 @@ AFRAME.registerComponent('dialog-popup', {
   },
   multiple: true,
   dialogPlane: null,
-  title: null,
   /**
    * Spawns the entities required to support this dialog.
    */
@@ -261,20 +260,20 @@ AFRAME.registerComponent('dialog-popup', {
     const title = document.createElement('a-entity');
     title.setAttribute('id', `${this.el.getAttribute('id')}--title`);
     title.setAttribute('text', {
-      value,
+      value: value.substring(0, wrapCount),
       color,
       font,
       width,
       wrapCount,
-      baseline: 'top',
+      baseline: 'top'
     });
+
     title.setAttribute('position', {
       x: padding,
       y: height / 2 - padding,
       z: 0.01
     });
 
-    this.title = title;
     return title;
   },
   /**
@@ -304,7 +303,7 @@ AFRAME.registerComponent('dialog-popup', {
 
     body.setAttribute('position', {
       x: padding,
-      y: height / 2 - padding * 2.5,
+      y: height / 2 - padding * 3,
       z: 0.01
     });
 
