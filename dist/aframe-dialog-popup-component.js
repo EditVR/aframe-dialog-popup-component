@@ -68,7 +68,10 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /**
  * @file index.js
@@ -76,16 +79,14 @@
  */
 
 /* global AFRAME */
-
 if (typeof AFRAME === 'undefined') {
-  throw new Error(
-    'Component attempted to register before AFRAME was available.'
-  );
+  throw new Error('Component attempted to register before AFRAME was available.');
 }
-
 /**
  * Dialog Popup component for A-Frame.
  */
+
+
 AFRAME.registerComponent('dialog-popup', {
   schema: {
     title: {
@@ -182,92 +183,91 @@ AFRAME.registerComponent('dialog-popup', {
   openIcon: null,
   closeIcon: null,
   hasImage: false,
+
   /**
    * Spawns the entities required to support this dialog.
    */
-  init() {
+  init: function init() {
     this.spawnEntities();
     this.cameraEl = document.querySelector('[camera]');
   },
+
   /**
    * If the component is open, ensure it always faces the camera.
    */
-  tick() {
+  tick: function tick() {
     if (this.isOpen) {
       this.positionDialogPlane();
     }
   },
+
   /**
    * When this component is removed, destruct event listeners.
    */
-  remove() {
-    const { openOn } = this.data;
+  remove: function remove() {
+    var openOn = this.data.openOn;
     this.openIcon.removeEventListener(openOn, this.toggleDialogOpen.bind(this));
-    this.closeIcon.removeEventListener(
-      openOn,
-      this.toggleDialogOpen.bind(this)
-    );
+    this.closeIcon.removeEventListener(openOn, this.toggleDialogOpen.bind(this));
   },
+
   /**
    * Handles opening and closing the dialog plane.
    */
-  toggleDialogOpen() {
+  toggleDialogOpen: function toggleDialogOpen() {
     this.isOpen = !this.isOpen;
+
     if (this.dialogPlane) {
       this.positionDialogPlane();
       this.dialogPlane.setAttribute('visible', this.isOpen);
     }
   },
+
   /**
    * Generates the open icon.
    */
-  generateOpenIcon() {
-    const {
-      openIconRadius: radius,
-      openIconColor: color,
-      openIconImage: src,
-      openOn
-    } = this.data;
-
-    const openIcon = document.createElement('a-entity');
-    openIcon.setAttribute('id', `${this.el.getAttribute('id')}--open-icon`);
+  generateOpenIcon: function generateOpenIcon() {
+    var _this$data = this.data,
+        radius = _this$data.openIconRadius,
+        color = _this$data.openIconColor,
+        src = _this$data.openIconImage,
+        openOn = _this$data.openOn;
+    var openIcon = document.createElement('a-entity');
+    openIcon.setAttribute('id', "".concat(this.el.getAttribute('id'), "--open-icon"));
     openIcon.setAttribute('position', this.el.getAttribute('position'));
     openIcon.setAttribute('geometry', {
       primitive: 'circle',
-      radius
+      radius: radius
     });
     openIcon.setAttribute('material', {
-      color,
-      src
-    });
-
-    // If the parent entity has aa look-at component attached, apply the look-at
+      color: color,
+      src: src
+    }); // If the parent entity has aa look-at component attached, apply the look-at
     // component to the openIcon.
-    const lookAt = this.el.getAttribute('look-at');
+
+    var lookAt = this.el.getAttribute('look-at');
+
     if (lookAt) {
       openIcon.setAttribute('look-at', lookAt);
     }
 
     openIcon.addEventListener(openOn, this.toggleDialogOpen.bind(this));
-
     this.openIcon = openIcon;
     return openIcon;
   },
+
   /**
    * Generates the close icon.
    */
-  generateCloseIcon() {
-    const {
-      closeIconRadius: radius,
-      closeIconColor: color,
-      closeIconImage: src,
-      dialogBoxWidth: width,
-      dialogBoxHeight: height,
-      openOn
-    } = this.data;
-
-    const closeIcon = document.createElement('a-entity');
-    closeIcon.setAttribute('id', `${this.el.getAttribute('id')}--close-icon`);
+  generateCloseIcon: function generateCloseIcon() {
+    var _this$data2 = this.data,
+        radius = _this$data2.closeIconRadius,
+        color = _this$data2.closeIconColor,
+        src = _this$data2.closeIconImage,
+        width = _this$data2.dialogBoxWidth,
+        height = _this$data2.dialogBoxHeight,
+        openOn = _this$data2.openOn;
+    var closeIcon = document.createElement('a-entity');
+    closeIcon.setAttribute('id', "".concat(this.el.getAttribute('id'), "--close-icon"));
     closeIcon.setAttribute('position', {
       x: width / 2,
       y: height / 2,
@@ -275,115 +275,109 @@ AFRAME.registerComponent('dialog-popup', {
     });
     closeIcon.setAttribute('geometry', {
       primitive: 'circle',
-      radius
+      radius: radius
     });
     closeIcon.setAttribute('material', {
-      color,
-      src
+      color: color,
+      src: src
     });
-
     closeIcon.addEventListener(openOn, this.toggleDialogOpen.bind(this));
-
     this.closeIcon = closeIcon;
     return closeIcon;
   },
+
   /**
    * Generates the title text.
    */
-  generateTitle() {
-    const {
-      title: value,
-      titleColor: color,
-      titleFont: font,
-      titleWrapCount: wrapCount,
-      dialogBoxWidth: width,
-      dialogBoxHeight: height,
-      dialogBoxPadding: padding,
-      imageHeight
-    } = this.data;
-
-    const title = document.createElement('a-entity');
-    title.setAttribute('id', `${this.el.getAttribute('id')}--title`);
+  generateTitle: function generateTitle() {
+    var _this$data3 = this.data,
+        value = _this$data3.title,
+        color = _this$data3.titleColor,
+        font = _this$data3.titleFont,
+        wrapCount = _this$data3.titleWrapCount,
+        width = _this$data3.dialogBoxWidth,
+        height = _this$data3.dialogBoxHeight,
+        padding = _this$data3.dialogBoxPadding,
+        imageHeight = _this$data3.imageHeight;
+    var title = document.createElement('a-entity');
+    title.setAttribute('id', "".concat(this.el.getAttribute('id'), "--title"));
     title.setAttribute('text', {
       value: value.substring(0, wrapCount),
-      color,
-      font,
-      wrapCount,
+      color: color,
+      font: font,
+      wrapCount: wrapCount,
       width: width - padding * 2,
       baseline: 'top',
       anchor: 'left'
     });
+    var y = height / 2 - padding;
 
-    let y = height / 2 - padding;
     if (this.hasImage) {
       y -= imageHeight / 2;
     }
 
     title.setAttribute('position', {
       x: -(width / 2) + padding,
-      y,
+      y: y,
       z: 0.01
     });
-
     return title;
   },
+
   /**
    * Generates the body text entity.
    */
-  generateBody() {
-    const {
-      body: value,
-      bodyColor: color,
-      bodyFont: font,
-      bodyWrapCount: wrapCount,
-      dialogBoxWidth: width,
-      dialogBoxHeight: height,
-      dialogBoxPadding: padding,
-      imageHeight
-    } = this.data;
-
-    const body = document.createElement('a-entity');
-    body.setAttribute('id', `${this.el.getAttribute('id')}--title`);
+  generateBody: function generateBody() {
+    var _this$data4 = this.data,
+        value = _this$data4.body,
+        color = _this$data4.bodyColor,
+        font = _this$data4.bodyFont,
+        wrapCount = _this$data4.bodyWrapCount,
+        width = _this$data4.dialogBoxWidth,
+        height = _this$data4.dialogBoxHeight,
+        padding = _this$data4.dialogBoxPadding,
+        imageHeight = _this$data4.imageHeight;
+    var body = document.createElement('a-entity');
+    body.setAttribute('id', "".concat(this.el.getAttribute('id'), "--title"));
     body.setAttribute('text', {
-      value,
-      color,
-      font,
-      wrapCount,
+      value: value,
+      color: color,
+      font: font,
+      wrapCount: wrapCount,
       width: width - padding * 2,
       baseline: 'top',
       anchor: 'left'
     });
+    var y = height / 2 - padding * 3;
 
-    let y = height / 2 - padding * 3;
     if (this.hasImage) {
       y -= imageHeight / 2;
     }
 
     body.setAttribute('position', {
       x: -(width / 2) + padding,
-      y,
+      y: y,
       z: 0.01
     });
-
     return body;
   },
+
   /**
    * Generates the image entity.
    */
-  generateImage() {
-    const {
-      image: src,
-      imageWidth: width,
-      imageHeight: height,
-      dialogBoxHeight
-    } = this.data;
+  generateImage: function generateImage() {
+    var _this$data5 = this.data,
+        src = _this$data5.image,
+        width = _this$data5.imageWidth,
+        height = _this$data5.imageHeight,
+        dialogBoxHeight = _this$data5.dialogBoxHeight;
 
     if (!src.length) {
       return null;
     }
 
-    const image = document.createElement('a-image');
-    image.setAttribute('id', `${this.el.getAttribute('id')}--image`);
+    var image = document.createElement('a-image');
+    image.setAttribute('id', "".concat(this.el.getAttribute('id'), "--image"));
     image.setAttribute('src', src);
     image.setAttribute('width', width);
     image.setAttribute('height', height);
@@ -392,59 +386,53 @@ AFRAME.registerComponent('dialog-popup', {
       y: dialogBoxHeight / 2,
       z: 0.01
     });
-
     this.hasImage = true;
     return image;
   },
+
   /**
    * Generates the dialog plane.
    */
-  generateDialogPlane() {
-    const {
-      dialogBoxWidth: width,
-      dialogBoxHeight: height,
-      dialogBoxPadding: padding,
-      dialogBoxColor: color
-    } = this.data;
-
-    const plane = document.createElement('a-entity');
-    plane.setAttribute('id', `${this.el.getAttribute('id')}--dialog-plane`);
-
+  generateDialogPlane: function generateDialogPlane() {
+    var _this$data6 = this.data,
+        width = _this$data6.dialogBoxWidth,
+        height = _this$data6.dialogBoxHeight,
+        padding = _this$data6.dialogBoxPadding,
+        color = _this$data6.dialogBoxColor;
+    var plane = document.createElement('a-entity');
+    plane.setAttribute('id', "".concat(this.el.getAttribute('id'), "--dialog-plane"));
     plane.setAttribute('visible', false);
     plane.setAttribute('geometry', {
       primitive: 'plane',
       width: width + padding,
       height: height + padding
     });
+    var image = this.generateImage();
 
-    const image = this.generateImage();
     if (image) {
       plane.appendChild(this.generateImage());
     }
 
-    plane.setAttribute('material', { color });
+    plane.setAttribute('material', {
+      color: color
+    });
     plane.appendChild(this.generateCloseIcon());
     plane.appendChild(this.generateTitle());
     plane.appendChild(this.generateBody());
-
     this.dialogPlane = plane;
-
     return plane;
   },
-  positionDialogPlane() {
+  positionDialogPlane: function positionDialogPlane() {
     if (this.dialogPlane) {
-      const vector = this.dialogPlane.object3D.parent.worldToLocal(
-        this.cameraEl.object3D.getWorldPosition()
-      );
+      var vector = this.dialogPlane.object3D.parent.worldToLocal(this.cameraEl.object3D.getWorldPosition());
       this.dialogPlane.object3D.lookAt(vector);
     }
   },
-  spawnEntities() {
+  spawnEntities: function spawnEntities() {
     this.el.appendChild(this.generateOpenIcon());
     this.el.appendChild(this.generateDialogPlane());
   }
 });
-
 
 /***/ })
 /******/ ]);

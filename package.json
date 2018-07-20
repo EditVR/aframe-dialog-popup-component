@@ -59,10 +59,13 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.0.0-beta.54",
+    "@babel/preset-env": "^7.0.0-beta.54",
     "@commitlint/cli": "^7.0.0",
     "@semantic-release/github": "^4.2.18",
     "@semantic-release/npm": "^3.3.4",
     "aframe": "*",
+    "babel-loader": "^8.0.0-beta",
     "browserify": "^13.0.0",
     "budo": "^8.2.2",
     "chai": "^3.4.1",
