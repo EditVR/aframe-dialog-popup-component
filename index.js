@@ -106,9 +106,12 @@ AFRAME.registerComponent('dialog-popup', {
     }
   },
   multiple: true,
-  dialogPlane: null,
-  openIcon: null,
-  closeIcon: null,
+  dialogPlaneEl: null,
+  openIconEl: null,
+  closeIconEl: null,
+  titleEl: null,
+  bodyEl: null,
+  imageEl: null,
   hasImage: false,
   /**
    * Spawns the entities required to support this dialog.
@@ -131,20 +134,32 @@ AFRAME.registerComponent('dialog-popup', {
    */
   remove() {
     const { openOn } = this.data;
-    this.openIcon.removeEventListener(openOn, this.toggleDialogOpen.bind(this));
-    this.closeIcon.removeEventListener(
+    this.openIconEl.removeEventListener(
       openOn,
       this.toggleDialogOpen.bind(this)
     );
+    this.closeIconEl.removeEventListener(
+      openOn,
+      this.toggleDialogOpen.bind(this)
+    );
+  },
+  /**
+   * When this component is updated, re-calculate title, body, image, and
+   * dialog plane to incorporate changes.
+   */
+  update() {
+    this.generateTitle();
+    this.generateBody();
+    this.generateImage();
   },
   /**
    * Handles opening and closing the dialog plane.
    */
   toggleDialogOpen() {
     this.isOpen = !this.isOpen;
-    if (this.dialogPlane) {
+    if (this.dialogPlaneEl) {
       this.positionDialogPlane();
-      this.dialogPlane.setAttribute('visible', this.isOpen);
+      this.dialogPlaneEl.setAttribute('visible', this.isOpen);
     }
   },
   /**
@@ -179,7 +194,7 @@ AFRAME.registerComponent('dialog-popup', {
 
     openIcon.addEventListener(openOn, this.toggleDialogOpen.bind(this));
 
-    this.openIcon = openIcon;
+    this.openIconEl = openIcon;
     return openIcon;
   },
   /**
@@ -213,7 +228,7 @@ AFRAME.registerComponent('dialog-popup', {
 
     closeIcon.addEventListener(openOn, this.toggleDialogOpen.bind(this));
 
-    this.closeIcon = closeIcon;
+    this.closeIconEl = closeIcon;
     return closeIcon;
   },
   /**
@@ -231,7 +246,7 @@ AFRAME.registerComponent('dialog-popup', {
       imageHeight
     } = this.data;
 
-    const title = document.createElement('a-entity');
+    const title = this.titleEl || document.createElement('a-entity');
     title.setAttribute('id', `${this.el.getAttribute('id')}--title`);
     title.setAttribute('text', {
       value: value.substring(0, wrapCount),
@@ -254,6 +269,7 @@ AFRAME.registerComponent('dialog-popup', {
       z: 0.01
     });
 
+    this.titleEl = title;
     return title;
   },
   /**
@@ -271,7 +287,7 @@ AFRAME.registerComponent('dialog-popup', {
       imageHeight
     } = this.data;
 
-    const body = document.createElement('a-entity');
+    const body = this.bodyEl || document.createElement('a-entity');
     body.setAttribute('id', `${this.el.getAttribute('id')}--title`);
     body.setAttribute('text', {
       value,
@@ -294,6 +310,7 @@ AFRAME.registerComponent('dialog-popup', {
       z: 0.01
     });
 
+    this.bodyEl = body;
     return body;
   },
   /**
@@ -311,7 +328,7 @@ AFRAME.registerComponent('dialog-popup', {
       return null;
     }
 
-    const image = document.createElement('a-image');
+    const image = this.imageEl || document.createElement('a-image');
     image.setAttribute('id', `${this.el.getAttribute('id')}--image`);
     image.setAttribute('src', src);
     image.setAttribute('width', width);
@@ -323,6 +340,7 @@ AFRAME.registerComponent('dialog-popup', {
     });
 
     this.hasImage = true;
+    this.imageEl = image;
     return image;
   },
   /**
@@ -336,7 +354,7 @@ AFRAME.registerComponent('dialog-popup', {
       dialogBoxColor: color
     } = this.data;
 
-    const plane = document.createElement('a-entity');
+    const plane = this.dialogPlaneEl || document.createElement('a-entity');
     plane.setAttribute('id', `${this.el.getAttribute('id')}--dialog-plane`);
 
     plane.setAttribute('visible', false);
@@ -356,16 +374,16 @@ AFRAME.registerComponent('dialog-popup', {
     plane.appendChild(this.generateTitle());
     plane.appendChild(this.generateBody());
 
-    this.dialogPlane = plane;
+    this.dialogPlaneEl = plane;
 
     return plane;
   },
   positionDialogPlane() {
-    if (this.dialogPlane) {
-      const vector = this.dialogPlane.object3D.parent.worldToLocal(
+    if (this.dialogPlaneEl) {
+      const vector = this.dialogPlaneEl.object3D.parent.worldToLocal(
         this.cameraEl.object3D.getWorldPosition()
       );
-      this.dialogPlane.object3D.lookAt(vector);
+      this.dialogPlaneEl.object3D.lookAt(vector);
     }
   },
   spawnEntities() {
