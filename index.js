@@ -114,8 +114,9 @@ AFRAME.registerComponent('dialog-popup', {
    * Spawns the entities required to support this dialog.
    */
   init() {
-    this.spawnEntities();
     this.cameraEl = document.querySelector('[camera]');
+    this.spawnEntities();
+    this.el.emit('loaded');
   },
   /**
    * If the component is open, ensure it always faces the camera.
