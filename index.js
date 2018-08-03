@@ -111,7 +111,6 @@ AFRAME.registerComponent('dialog-popup', {
   },
   multiple: true,
   dialogPlaneEl: null,
-  openIconEl: null,
   closeIconEl: null,
   titleEl: null,
   bodyEl: null,
@@ -122,6 +121,7 @@ AFRAME.registerComponent('dialog-popup', {
    */
   init() {
     this.cameraEl = document.querySelector('[camera]');
+    this.generateOpenIcon()
     this.spawnEntities();
     this.el.emit('loaded');
   },
@@ -138,7 +138,7 @@ AFRAME.registerComponent('dialog-popup', {
    */
   remove() {
     const { openOn } = this.data;
-    this.openIconEl.removeEventListener(
+    this.el.removeEventListener(
       openOn,
       this.toggleDialogOpen.bind(this)
     );
@@ -159,12 +159,18 @@ AFRAME.registerComponent('dialog-popup', {
   /**
    * Handles opening and closing the dialog plane.
    */
-  toggleDialogOpen() {
-    this.isOpen = !this.isOpen;
-    if (this.data.active && this.dialogPlaneEl) {
+  toggleDialogOpen(event) {
+    // If the close icon is clicked, close the dialog.
+    if (event.target.getAttribute('id') === `${this.el.getAttribute('id')}--close-icon`) {
+      this.dialogPlaneEl.setAttribute('visible', false);
+      this.isOpen = false;
+    }
+
+    // If the open icon is clicked, and the dialog is active, open the dialog.
+    if (this.data.active && event.target.getAttribute('id') === this.el.getAttribute('id')) {
       this.positionDialogPlane();
-      this.dialogPlaneEl.setAttribute('visible', this.isOpen);
-      this.openIconEl.setAttribute('visible', !this.isOpen);
+      this.dialogPlaneEl.setAttribute('visible', true);
+      this.isOpen = true;
     }
   },
   /**
@@ -178,32 +184,16 @@ AFRAME.registerComponent('dialog-popup', {
       openOn
     } = this.data;
 
-    const openIcon = document.createElement('a-entity');
-    openIcon.setAttribute('id', `${this.el.getAttribute('id')}--open-icon`);
-    openIcon.setAttribute(
-      'position',
-      Object.assign({}, this.el.getAttribute('position'))
-    );
-    openIcon.setAttribute('geometry', {
+    this.el.setAttribute('geometry', {
       primitive: 'circle',
       radius
     });
-    openIcon.setAttribute('material', {
+    this.el.setAttribute('material', {
       color,
       src
     });
 
-    // If the parent entity has aa look-at component attached, apply the look-at
-    // component to the openIcon.
-    const lookAt = this.el.getAttribute('look-at');
-    if (lookAt) {
-      openIcon.setAttribute('look-at', lookAt);
-    }
-
-    openIcon.addEventListener(openOn, this.toggleDialogOpen.bind(this));
-
-    this.openIconEl = openIcon;
-    return openIcon;
+    this.el.addEventListener(openOn, this.toggleDialogOpen.bind(this));
   },
   /**
    * Generates the close icon.
@@ -364,11 +354,7 @@ AFRAME.registerComponent('dialog-popup', {
 
     const plane = this.dialogPlaneEl || document.createElement('a-entity');
     plane.setAttribute('id', `${this.el.getAttribute('id')}--dialog-plane`);
-    plane.setAttribute(
-      'position',
-      Object.assign({}, this.el.getAttribute('position'))
-    );
-
+    plane.setAttribute('position', { x: 0, y: 0, z: 0.5 });
     plane.setAttribute('visible', false);
     plane.setAttribute('geometry', {
       primitive: 'plane',
@@ -399,8 +385,6 @@ AFRAME.registerComponent('dialog-popup', {
     }
   },
   spawnEntities() {
-    this.el.appendChild(this.generateOpenIcon());
     this.el.appendChild(this.generateDialogPlane());
-    this.el.removeAttribute('position');
   }
 });
