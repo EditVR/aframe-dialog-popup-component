@@ -159,6 +159,7 @@ AFRAME.registerComponent('dialog-popup', {
     if (this.dialogPlaneEl) {
       this.positionDialogPlane();
       this.dialogPlaneEl.setAttribute('visible', this.isOpen);
+      this.openIconEl.setAttribute('visible', !this.isOpen);
     }
   },
   /**
@@ -174,7 +175,10 @@ AFRAME.registerComponent('dialog-popup', {
 
     const openIcon = document.createElement('a-entity');
     openIcon.setAttribute('id', `${this.el.getAttribute('id')}--open-icon`);
-    openIcon.setAttribute('position', this.el.getAttribute('position'));
+    openIcon.setAttribute(
+      'position',
+      Object.assign({}, this.el.getAttribute('position'))
+    );
     openIcon.setAttribute('geometry', {
       primitive: 'circle',
       radius
@@ -355,6 +359,10 @@ AFRAME.registerComponent('dialog-popup', {
 
     const plane = this.dialogPlaneEl || document.createElement('a-entity');
     plane.setAttribute('id', `${this.el.getAttribute('id')}--dialog-plane`);
+    plane.setAttribute(
+      'position',
+      Object.assign({}, this.el.getAttribute('position'))
+    );
 
     plane.setAttribute('visible', false);
     plane.setAttribute('geometry', {
@@ -388,5 +396,6 @@ AFRAME.registerComponent('dialog-popup', {
   spawnEntities() {
     this.el.appendChild(this.generateOpenIcon());
     this.el.appendChild(this.generateDialogPlane());
+    this.el.removeAttribute('position');
   }
 });

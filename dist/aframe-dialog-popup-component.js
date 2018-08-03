@@ -232,6 +232,7 @@ AFRAME.registerComponent('dialog-popup', {
     if (this.dialogPlaneEl) {
       this.positionDialogPlane();
       this.dialogPlaneEl.setAttribute('visible', this.isOpen);
+      this.openIconEl.setAttribute('visible', !this.isOpen);
     }
   },
 
@@ -246,7 +247,7 @@ AFRAME.registerComponent('dialog-popup', {
         openOn = _this$data.openOn;
     var openIcon = document.createElement('a-entity');
     openIcon.setAttribute('id', "".concat(this.el.getAttribute('id'), "--open-icon"));
-    openIcon.setAttribute('position', this.el.getAttribute('position'));
+    openIcon.setAttribute('position', Object.assign({}, this.el.getAttribute('position')));
     openIcon.setAttribute('geometry', {
       primitive: 'circle',
       radius: radius
@@ -417,6 +418,7 @@ AFRAME.registerComponent('dialog-popup', {
         color = _this$data6.dialogBoxColor;
     var plane = this.dialogPlaneEl || document.createElement('a-entity');
     plane.setAttribute('id', "".concat(this.el.getAttribute('id'), "--dialog-plane"));
+    plane.setAttribute('position', Object.assign({}, this.el.getAttribute('position')));
     plane.setAttribute('visible', false);
     plane.setAttribute('geometry', {
       primitive: 'plane',
@@ -447,6 +449,7 @@ AFRAME.registerComponent('dialog-popup', {
   spawnEntities: function spawnEntities() {
     this.el.appendChild(this.generateOpenIcon());
     this.el.appendChild(this.generateDialogPlane());
+    this.el.removeAttribute('position');
   }
 });
 
