@@ -191,8 +191,9 @@ AFRAME.registerComponent('dialog-popup', {
    * Spawns the entities required to support this dialog.
    */
   init: function init() {
-    this.spawnEntities();
     this.cameraEl = document.querySelector('[camera]');
+    this.spawnEntities();
+    this.el.emit('loaded');
   },
 
   /**
