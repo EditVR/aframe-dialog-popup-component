@@ -16,11 +16,12 @@ For [A-Frame](https://aframe.io).
 | titleColor             | Text color of title.        | black                         |
 | titleFont              | Title font.                 | mozillavr                     |
 | titleWrapCount         | Title entity wrap count.    | 24                            |
-| body                   | String containing body .    | This dialog has no body yet.  |
+| body                   | String containing body.     | This dialog has no body yet.  |
 | bodyColor              | Text color of body.         | black                         |
 | bodyFont               | Body  font.                 | mozillavr                     |
 | bodyWrapCount          | Body entity wrap count.     | 30                            |
 | openOn                 | Open/Close event.           | click                         |
+| active                 | Turn dialog on/off.         | true                          |
 | openIconImage          | Icon image for open button. | None                          |
 | openIconRadius         | Radius for open icon.       | 0.3                           |
 | openIconColor          | Color for open icon.        | white                         |
@@ -45,7 +46,7 @@ Install and use by directly including the [browser files](dist):
 <head>
   <title>My A-Frame Scene</title>
   <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
-  <script src="https://unpkg.com/@editvr/aframe-dialog-popup-component@1.4.0/dist/aframe-dialog-popup-component.min.js"></script>
+  <script src="https://unpkg.com/@editvr/aframe-dialog-popup-component@1.7.2/dist/aframe-dialog-popup-component.min.js"></script>
 </head>
 
 <body>

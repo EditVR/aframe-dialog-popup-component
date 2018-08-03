@@ -52,6 +52,10 @@ AFRAME.registerComponent('dialog-popup', {
       type: 'string',
       default: 'click'
     },
+    active: {
+      type: 'boolean',
+      default: true,
+    },
     openIconImage: {
       type: 'asset',
       default: ''
@@ -157,7 +161,7 @@ AFRAME.registerComponent('dialog-popup', {
    */
   toggleDialogOpen() {
     this.isOpen = !this.isOpen;
-    if (this.dialogPlaneEl) {
+    if (this.data.active && this.dialogPlaneEl) {
       this.positionDialogPlane();
       this.dialogPlaneEl.setAttribute('visible', this.isOpen);
       this.openIconEl.setAttribute('visible', !this.isOpen);
